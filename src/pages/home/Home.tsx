@@ -2,7 +2,7 @@ import { Feed } from "../../components/feed/feed";
 import { RightBar } from "../../components/rightbar/rightbar";
 import { Sidebar } from "../../components/sidebar/sidebar";
 import { Topbar } from "../../components/topbar/Topbar";
-import "./home.css"
+import "./home.css";
 
 export const Home = () => {
   return (
@@ -11,7 +11,7 @@ export const Home = () => {
       <div className="homeContainer">
         <Sidebar />
         <Feed />
-        <RightBar type='Home' />
+        <RightBar />
       </div>
     </>
   );

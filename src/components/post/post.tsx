@@ -1,19 +1,31 @@
-import { FC, useState } from "react";
-import { IPostItem } from "../../dummyData";
+import { FC, useEffect, useState } from "react";
+import { IPostItemResponse, IUserItemResponse } from "../../dummyData";
 import "./post.css";
 import { MoreVert } from "@mui/icons-material";
-import { Users } from "../../dummyData";
+import axios from "axios";
+import { format } from "timeago.js";
+import { Link } from "react-router-dom";
 
 interface IPostProps {
-  post: IPostItem;
+  post: IPostItemResponse;
 }
 
 export const Post: FC<IPostProps> = ({ post }) => {
-  const userName = Users.filter((u) => u.id === post.userId)[0].username;
-  const userProfile = Users.filter((u) => u.id === post.userId)[0]
-    .profilePicture;
-  const [like, setLike] = useState<number>(post.like);
+  const [user, setUser] = useState<IUserItemResponse>();
+  const [like, setLike] = useState<number>(post.likes.length);
   const [isLiked, setIsLiked] = useState<boolean>(false);
+  const PF = process.env.REACT_APP_PUBLIC_FOLDER as string;
+
+  useEffect(() => {
+    getUser();
+  }, []);
+
+  const getUser = async () => {
+    const res = await axios.get(`/users?userId=${post.userId}`);
+    if (res) {
+      setUser(res.data);
+    }
+  };
 
   const likeHandler = () => {
     setLike((prev) => (isLiked ? prev - 1 : prev + 1));
@@ -24,9 +36,15 @@ export const Post: FC<IPostProps> = ({ post }) => {
       <div className="postWrapper">
         <div className="postTop">
           <div className="postTopLeft">
-            <img src={userProfile} alt="" className="postProfileImg" />
-            <span className="postUserName">{userName}</span>
-            <span className="postDate">{post.date}</span>
+            <Link to={`profile/${user?.userName}`}>
+              <img
+                src={PF + user?.profilePicture || PF + "person/noAvatar.png"}
+                alt=""
+                className="postProfileImg"
+              />
+            </Link>
+            <span className="postUserName">{user?.userName}</span>
+            <span className="postDate">{format(post.createdAt)}</span>
           </div>
           <div className="postTopRight">
             <MoreVert />
@@ -34,18 +52,18 @@ export const Post: FC<IPostProps> = ({ post }) => {
         </div>
         <div className="postCenter">
           <span className="postText">{post?.desc}</span>
-          <img src={post.photo} alt="" className="postImg" />
+          <img src={PF + post?.img} alt="" className="postImg" />
         </div>
         <div className="postBottom">
           <div className="postBottomLeft">
             <img
-              src="/assets/like.png"
+              src={`${PF}like.png`}
               alt=""
               className="likeIcon"
               onClick={likeHandler}
             />
             <img
-              src="/assets/heart.png"
+              src={`${PF}heart.png`}
               alt=""
               className="likeIcon"
               onClick={likeHandler}

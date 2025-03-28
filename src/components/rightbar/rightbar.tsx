@@ -1,23 +1,24 @@
 import "./rightbar.css";
-import { Users } from "../../dummyData";
+import { IUserItemResponse, Users } from "../../dummyData";
 import { Online } from "../online/online";
 import { FC } from "react";
 
 interface IRightBarProps {
-  type: string;
+  user?: IUserItemResponse;
 }
 
-export const RightBar: FC<IRightBarProps> = ({ type }) => {
+export const RightBar: FC<IRightBarProps> = ({ user }) => {
+  const PF = process.env.REACT_APP_PUBLIC_FOLDER as string;
   const HomeRightBar = () => {
     return (
       <>
         <div className="birthdayContainer">
-          <img src="/assets/gift.png" alt="" className="birthdayImg" />
+          <img src={`${PF}gift.png`} alt="" className="birthdayImg" />
           <span className="birthdayText">
             <b>Pola Foster</b> and <b>3 other friends</b> have a birthday today
           </span>
         </div>
-        <img src="/assets/ad.png" alt="" className="rightBarAd" />
+        <img src={`${PF}ad.png`} alt="" className="rightBarAd" />
         <h4 className="rightBarTitle">Online Friends</h4>
         <ul className="rightBarFriendList">
           {Users.map((u) => (
@@ -35,22 +36,28 @@ export const RightBar: FC<IRightBarProps> = ({ type }) => {
         <div className="rightBarInfo">
           <div className="rightBarInfoItem">
             <span className="rightBarInfoKey">City:</span>
-            <span className="rightBarInfoValue">New York</span>
+            <span className="rightBarInfoValue">{user?.city}</span>
           </div>
           <div className="rightBarInfoItem">
             <span className="rightBarInfoKey">From:</span>
-            <span className="rightBarInfoValue">Madrid</span>
+            <span className="rightBarInfoValue">{user?.from}</span>
           </div>
           <div className="rightBarInfoItem">
             <span className="rightBarInfoKey">Relationship:</span>
-            <span className="rightBarInfoValue">Single</span>
+            <span className="rightBarInfoValue">
+              {user?.relationship === 1
+                ? "Single"
+                : user?.relationship === 2
+                ? "Married"
+                : "-"}
+            </span>
           </div>
         </div>
         <h4 className="rightBarTitle">User Friends</h4>
         <div className="rightBarFollowings">
           <div className="rightBarFollowingItem">
             <img
-              src="assets/person/1.jpeg"
+              src={`${PF}person/1.jpeg`}
               alt=""
               className="rightBarFollowingImg"
             />
@@ -58,7 +65,7 @@ export const RightBar: FC<IRightBarProps> = ({ type }) => {
           </div>
           <div className="rightBarFollowingItem">
             <img
-              src="assets/person/5.jpeg"
+              src={`${PF}person/5.jpeg`}
               alt=""
               className="rightBarFollowingImg"
             />
@@ -66,7 +73,7 @@ export const RightBar: FC<IRightBarProps> = ({ type }) => {
           </div>
           <div className="rightBarFollowingItem">
             <img
-              src="assets/person/2.jpeg"
+              src={`${PF}person/2.jpeg`}
               alt=""
               className="rightBarFollowingImg"
             />
@@ -74,7 +81,7 @@ export const RightBar: FC<IRightBarProps> = ({ type }) => {
           </div>
           <div className="rightBarFollowingItem">
             <img
-              src="assets/person/3.jpeg"
+              src={`${PF}person/3.jpeg`}
               alt=""
               className="rightBarFollowingImg"
             />
@@ -82,7 +89,7 @@ export const RightBar: FC<IRightBarProps> = ({ type }) => {
           </div>
           <div className="rightBarFollowingItem">
             <img
-              src="assets/person/4.jpeg"
+              src={`${PF}person/4.jpeg`}
               alt=""
               className="rightBarFollowingImg"
             />
@@ -95,7 +102,7 @@ export const RightBar: FC<IRightBarProps> = ({ type }) => {
   return (
     <div className="rightBar">
       <div className="rightBarWrapper">
-        {type === "profile" ? <ProfileRightBar /> : <HomeRightBar />}
+        {user ? <ProfileRightBar /> : <HomeRightBar />}
       </div>
     </div>
   );

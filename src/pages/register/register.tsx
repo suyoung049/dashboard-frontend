@@ -11,7 +11,7 @@ export const Register = () => {
           </span>
         </div>
         <div className="loginRight">
-          <div className="loginBox">
+          <div className="registerBox">
             <input placeholder="Username" className="loginInput" />
             <input placeholder="Email" className="loginInput" />
             <input placeholder="Password" className="loginInput" />
