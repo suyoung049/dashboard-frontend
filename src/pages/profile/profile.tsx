@@ -15,7 +15,7 @@ export const Profile = () => {
 
   useEffect(() => {
     getUser();
-  }, []);
+  }, [username]);
 
   const getUser = async () => {
     const res = await axios.get(`/users?userName=${username}`);

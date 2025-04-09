@@ -1,20 +1,27 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useContext, useEffect, useState } from "react";
 import { IPostItemResponse, IUserItemResponse } from "../../dummyData";
 import "./post.css";
 import { MoreVert } from "@mui/icons-material";
 import axios from "axios";
 import { format } from "timeago.js";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
 
 interface IPostProps {
   post: IPostItemResponse;
 }
 
 export const Post: FC<IPostProps> = ({ post }) => {
+  const { user: currentUser } = useContext(AuthContext);
   const [user, setUser] = useState<IUserItemResponse>();
   const [like, setLike] = useState<number>(post.likes.length);
   const [isLiked, setIsLiked] = useState<boolean>(false);
   const PF = process.env.REACT_APP_PUBLIC_FOLDER as string;
+
+  useEffect(()=> {
+    setIsLiked(post.likes.includes(currentUser?._id as string))
+  }, [currentUser?._id, post.likes])
+
 
   useEffect(() => {
     getUser();
@@ -28,6 +35,9 @@ export const Post: FC<IPostProps> = ({ post }) => {
   };
 
   const likeHandler = () => {
+    try {
+      axios.put(`/posts/${post._id}/like`, { userId: currentUser?._id });
+    } catch (e) {}
     setLike((prev) => (isLiked ? prev - 1 : prev + 1));
     setIsLiked(!isLiked);
   };

@@ -5,7 +5,7 @@ export interface IUserItem {
 }
 
 export interface IUserItemResponse {
-  _id: number;
+  _id: string;
   profilePicture: string;
   coverPicture?:string;
   followers?:string[];

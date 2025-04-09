@@ -5,23 +5,25 @@ import "./feed.css";
 import { IPostItemResponse } from "../../dummyData";
 import axios from "axios";
 import { AuthContext } from "../../context/AuthContext";
+import { IsPostContext } from "../../context/PostContext";
 
 interface FeedType {
   userName?: string;
 }
 
 export const Feed: FC<FeedType> = ({ userName }) => {
-  const [posts, setPosts] = useState<IPostItemResponse[]>([]);
   const { user } = useContext(AuthContext);
+  const [posts, setPosts] = useState<IPostItemResponse[]>([]);
+  const { isPost } = useContext(IsPostContext);
 
   useEffect(() => {
     getTimeline();
-  }, []);
+  }, [userName, isPost]);
 
   const getTimeline = async () => {
     const res = userName
       ? await axios.get(`/posts/profile/${userName}`)
-      : await axios.get("/posts/timeline/67e1087b32cd40820def0b23");
+      : await axios.get(`/posts/timeline/${user?._id}`);
     if (res) {
       setPosts(res.data);
     }
@@ -30,7 +32,7 @@ export const Feed: FC<FeedType> = ({ userName }) => {
   return (
     <div className="feed">
       <div className="feedWrapper">
-        <Share />
+        {userName ? userName === user?.userName && <Share /> : <Share />}
         {posts.map((p) => (
           <Post key={p._id} post={p} />
         ))}

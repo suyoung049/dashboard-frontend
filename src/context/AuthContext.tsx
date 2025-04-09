@@ -11,7 +11,7 @@ interface IAuthContext {
 }
 
 const INITIAL_STATE: IAuthContext = {
-  user: null,
+  user: JSON.parse(sessionStorage.getItem("user") || "null"),
   isFetching: false,
   error: false,
   dispatch: () => {},
