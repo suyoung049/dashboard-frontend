@@ -11,7 +11,7 @@ interface IRightBarProps {
   user?: IUserItemResponse;
 }
 
-interface IFriendResponse {
+export interface IFriendResponse {
   _id: string;
   userName: string;
   profilePicture: string;

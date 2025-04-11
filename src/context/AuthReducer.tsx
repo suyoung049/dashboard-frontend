@@ -34,9 +34,12 @@ export const AuthReducer = (
     case "FOLLOW":
       if (!state.user) return state;
 
-      const updatedFollowings = [...state.user.followings as string[], action.payload];
+      const updatedFollowings = [
+        ...(state.user.followings as string[]),
+        action.payload,
+      ];
 
-      const updatedUserFollow : IUserItemResponse  = {
+      const updatedUserFollow: IUserItemResponse = {
         ...state.user,
         followings: updatedFollowings as string[],
       };
