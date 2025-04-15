@@ -17,6 +17,11 @@ export interface IUserItemResponse {
   relationship?: number;
 }
 
+export interface ILoginSuccess {
+  accessToken: string;
+  refreshToken:string;
+}
+
 export interface IPostItem {
   id: number;
   desc?: string;

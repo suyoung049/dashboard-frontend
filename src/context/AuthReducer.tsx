@@ -1,8 +1,8 @@
+import { decodeJwt } from "jose";
+import { ILoginSuccess, IUserItemResponse } from "../dummyData";
 import { ILoginState } from "./AuthActions";
-import { IUserItemResponse } from "../dummyData";
-
 interface IAuthState {
-  user: IUserItemResponse | null;
+  user?: IUserItemResponse | null;
   isFetching: boolean;
   error: boolean | string;
 }
@@ -14,59 +14,51 @@ export const AuthReducer = (
   switch (action.type) {
     case "LOGIN_START":
       return {
-        user: null,
         isFetching: true,
         error: false,
       };
-    case "LOGIN_SUCCESS":
-      sessionStorage.setItem("user", JSON.stringify(action.payload));
+    case "LOGIN_SUCCESS": {
+      if (typeof action.payload === "string") {
+        return {
+          isFetching: false,
+          error: "Invalid payload in LOGIN_SUCCESS",
+        };
+      }
+
+      const getUserFromToken = (
+        token: string | null
+      ): IUserItemResponse | null => {
+        if (!token) return null;
+
+        try {
+          const decoded = decodeJwt<IUserItemResponse>(token); // ✅ 제네릭으로 타입 지정
+          const { exp, iat, ...user } = decoded;
+          return user;
+        } catch (error) {
+          return null;
+        }
+      };
+      const { accessToken, refreshToken } = action.payload as ILoginSuccess;
+      sessionStorage.setItem("accessToken", accessToken);
+      sessionStorage.setItem("refreshToken", refreshToken);
+      const user = getUserFromToken(accessToken) as IUserItemResponse;
       return {
-        user: action.payload as IUserItemResponse,
+        user,
         isFetching: false,
         error: false,
       };
+    }
     case "LOGIN_FAILURE":
       return {
-        user: null,
         isFetching: false,
         error: action.payload as string,
       };
-    case "FOLLOW":
-      if (!state.user) return state;
-
-      const updatedFollowings = [
-        ...(state.user.followings as string[]),
-        action.payload,
-      ];
-
-      const updatedUserFollow: IUserItemResponse = {
-        ...state.user,
-        followings: updatedFollowings as string[],
-      };
-
-      sessionStorage.setItem("user", JSON.stringify(updatedUserFollow));
-
+    case "SET_USER":
       return {
-        ...state,
-        user: updatedUserFollow,
-      };
-    case "UNFOLLOW":
-      if (!state.user) return state;
-
-      const filteredFollowings = state.user.followings?.filter(
-        (following) => following !== action.payload
-      );
-
-      const updatedUserUnfollow = {
-        ...state.user,
-        followings: filteredFollowings,
-      };
-
-      sessionStorage.setItem("user", JSON.stringify(updatedUserUnfollow));
-
-      return {
-        ...state,
-        user: updatedUserUnfollow,
+        
+        user: action.payload as IUserItemResponse,
+        isFetching: false,
+        error: false,
       };
     default:
       return state;

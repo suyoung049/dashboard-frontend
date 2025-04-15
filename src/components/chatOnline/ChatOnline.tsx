@@ -36,7 +36,6 @@ export const ChatOnline: FC<IOnlineProps> = ({
   }, [currentUser?._id]);
 
   useEffect(() => {
-    console.log(onlineUsers)
     setOnlineFriends(friends.filter((f) => onlineUsers.includes(f._id)));
   }, [friends, onlineUsers]);
 

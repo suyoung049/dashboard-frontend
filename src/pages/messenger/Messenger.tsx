@@ -54,11 +54,9 @@ export const Messenger = () => {
       socket.emit("addUser", user?._id);
   
       const handleGetUsers = (users: any) => {
-        console.log(users);
         const onlineFollowings = user?.followings?.filter((f) =>
           users.some((u: any) => u.userId === f)
         );
-        console.log(onlineFollowings);
         setOnlineUsers(onlineFollowings as any);
       };
   

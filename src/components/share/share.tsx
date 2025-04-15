@@ -1,6 +1,12 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./share.css";
-import { PermMedia, Label, Room, EmojiEmotions, Cancel } from "@mui/icons-material";
+import {
+  PermMedia,
+  Label,
+  Room,
+  EmojiEmotions,
+  Cancel,
+} from "@mui/icons-material";
 import { AuthContext } from "../../context/AuthContext";
 import axios from "axios";
 import { IsPostContext } from "../../context/PostContext";
@@ -83,22 +89,29 @@ export const Share = () => {
         {file && (
           <div className="shareImgContainer">
             <img className="shareImg" src={URL.createObjectURL(file)} alt="" />
-            <Cancel className="shareCancelImg" onClick={() => {setFile(null)}}/>
+            <Cancel
+              className="shareCancelImg"
+              onClick={() => {
+                setFile(null);
+              }}
+            />
           </div>
         )}
         <form className="shareBottom" onSubmit={submitHandler}>
-          <label htmlFor="file" className="shareOptions">
-            <div className="shareOption">
-              <PermMedia htmlColor="tomato" className="shareIcon" />
-              <span className="shareOptionText">Photo or Video</span>
-              <input
-                style={{ display: "none" }}
-                type="file"
-                id="file"
-                accept=".png,.jpeg,.jpg"
-                onChange={handleFile}
-              />
-            </div>
+          <div className="shareOptions">
+            <label htmlFor="file">
+              <div className="shareOption">
+                <PermMedia htmlColor="tomato" className="shareIcon" />
+                <span className="shareOptionText">Photo or Video</span>
+                <input
+                  style={{ display: "none" }}
+                  type="file"
+                  id="file"
+                  accept=".png,.jpeg,.jpg"
+                  onChange={handleFile}
+                />
+              </div>
+            </label>
             <div className="shareOption">
               <Label htmlColor="blue" className="shareIcon" />
               <span className="shareOptionText">Tag</span>
@@ -111,7 +124,7 @@ export const Share = () => {
               <EmojiEmotions color="secondary" className="shareIcon" />
               <span className="shareOptionText">Feeling</span>
             </div>
-          </label>
+          </div>
           <button className="shareButton" type="submit">
             Share
           </button>

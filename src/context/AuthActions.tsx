@@ -1,24 +1,24 @@
-import { IUserItemResponse } from "../dummyData";
+import { ILoginSuccess, IUserItemResponse } from "../dummyData";
 
 export type LoginActionType =
   | "LOGIN_START"
   | "LOGIN_SUCCESS"
   | "LOGIN_FAILURE"
   | "FOLLOW"
-  | "UNFOLLOW";
+  | "SET_USER";
 
 export interface ILoginState {
   type: LoginActionType;
-  payload?: IUserItemResponse | string;
+  payload?: ILoginSuccess | string | IUserItemResponse;
 }
 
 export const LoginStart = (): ILoginState => ({
   type: "LOGIN_START",
 });
 
-export const LoginSuccess = (user: IUserItemResponse): ILoginState => ({
+export const LoginSuccess = (payload: ILoginSuccess): ILoginState => ({
   type: "LOGIN_SUCCESS",
-  payload: user,
+  payload,
 });
 
 export const LoginFailure = (error: string): ILoginState => ({
@@ -31,7 +31,7 @@ export const Follow = (userId: string): ILoginState => ({
   payload: userId,
 });
 
-export const unFollow = (userId: string): ILoginState => ({
-  type: "UNFOLLOW",
-  payload: userId,
+export const SetUser = (payload: IUserItemResponse): ILoginState => ({
+  type: "SET_USER",
+  payload
 });

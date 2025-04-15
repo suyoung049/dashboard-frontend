@@ -20,8 +20,8 @@ export interface IFriendResponse {
 export const RightBar: FC<IRightBarProps> = ({ user }) => {
   const PF = process.env.REACT_APP_PUBLIC_FOLDER as string;
   const [friends, setFriends] = useState<IFriendResponse[]>([]);
-  const { user: currentUser, dispatch } = useContext(AuthContext);
-  const [followed, setFollowed] = useState<boolean>(currentUser?.followings?.includes(user?._id as string) as boolean);
+  const { user: currentUser } = useContext(AuthContext);
+  const [followed, setFollowed] = useState<boolean>(false);
 
   useEffect(() => {
     setFollowed(
@@ -30,15 +30,25 @@ export const RightBar: FC<IRightBarProps> = ({ user }) => {
   }, [user?._id]);
 
   useEffect(() => {
-    const getFriends = async () => {
-      try {
-        const friendList = await axios.get(`/users/friends/${user?._id}`);
-        setFriends(friendList.data);
-      } catch (e) {
-        console.error(e);
-      }
-    };
-    getFriends();
+    if (user) {
+      const getFriends = async () => {
+        try {
+          const friendList = await axios.get(`/users/friends/${user?._id}`);
+          const currentUserFollowing = await axios.get(
+            `/users/friends/${currentUser?._id}`
+          );
+          setFollowed(
+            currentUserFollowing.data.some(
+              (following: IFriendResponse) => following._id === user?._id
+            ) as boolean
+          );
+          setFriends(friendList.data);
+        } catch (e) {
+          console.error(e);
+        }
+      };
+      getFriends();
+    }
   }, [user?._id]);
 
   const handleClick = async () => {
@@ -47,12 +57,10 @@ export const RightBar: FC<IRightBarProps> = ({ user }) => {
         await axios.put(`/users/${user?._id}/unfollow`, {
           userId: currentUser?._id,
         });
-        dispatch({ type: "UNFOLLOW", payload: user?._id });
       } else {
         await axios.put(`/users/${user?._id}/follow`, {
           userId: currentUser?._id,
         });
-        dispatch({ type: "FOLLOW", payload: user?._id });
       }
     } catch (e) {
       console.error(e);
